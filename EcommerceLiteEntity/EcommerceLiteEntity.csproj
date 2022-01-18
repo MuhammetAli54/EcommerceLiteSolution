@@ -54,6 +54,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Enums\AllEnums.cs" />
     <Compile Include="IdentityModels\ApplicationRole.cs" />
     <Compile Include="IdentityModels\ApplicationUser.cs" />
     <Compile Include="Models\Admin.cs" />
@@ -68,6 +69,7 @@
     <Compile Include="Models\Product.cs" />
     <Compile Include="Models\TheBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ViewModels\MailModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
