@@ -1,0 +1,67 @@
+﻿@using EcommerceLiteUI.Models
+@model RegisterViewModel
+@{
+    ViewBag.Title = "Register";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<div class="row margin-vert-30">
+    <!--Register-->
+
+    <div class="col-md-6 col-md-offset-3 col-sm-offset-3">
+        <span class="text-danger">@Html.ValidationSummary()</span>
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "form-horizontal" }))
+        {
+            @Html.AntiForgeryToken()
+            <br />
+            <div class="signup-header" align="center">
+                <h2>Hemen Kayıt Olabilirsiniz</h2>
+                <p>
+                    Zaten üye misiniz? Click
+                    <a href="@Url.Action("Login","Account")">BURAYA</a> tıklayarak giriş yapabilirsiniz.
+                </p>
+            </div>
+            <hr />
+            <b>@Html.DisplayNameFor(x => x.TcNumber):</b>
+            @Html.TextBoxFor(x => x.TcNumber, new { @class = "form-control margin-bottom-10" })
+            <label>Adınız:</label>
+            @Html.TextBoxFor(x => x.Name, new { @class = "form-control margin-bottom-10" })
+            <label>Soyadınız:</label>
+            @Html.TextBoxFor(x => x.Surname, new { @class = "form-control margin-bottom-10" })
+            <label>
+                Email Adresi:
+                <span class="color-red">*</span>
+            </label><br />
+            @Html.TextBoxFor(x => x.Email, new { @class = "form-control margin-bottom-10", type = "email" })
+            
+            <!-------->
+            <div class="row">
+                <div class="col-sm-6">
+                    <label>
+                        Şifre:
+                        <span class="color-red">*</span>
+                    </label>
+                    @Html.TextBoxFor(x => x.Password, new { @class = "form-control margin-bottom-10", type = "password" })
+                    <span class="text-danger">  @Html.ValidationMessageFor(x => x.Password) </span>
+                </div>
+                <div class="col-sm-6">
+                    <label>
+                        Şifre Tekrar:
+                        <span class="color-red">*</span>
+                    </label>
+                    @Html.TextBoxFor(x => x.ConfirmPassword, new { @class = "form-control margin-bottom-10", type = "password" })
+                    <span class="text-danger">@Html.ValidationMessageFor(x => x.ConfirmPassword)</span>
+                </div>
+            </div><br />
+            <div class="row">
+                <div class="col-sm-offset-9">
+                    <button type="submit" class="btn btn-info">Kayıt Ol</button>
+                </div>
+            </div>
+        }
+
+    </div>
+
+    <!--/Register-->
+</div>
+
