@@ -21,9 +21,9 @@ namespace EcommerceLiteUI.Models
         [EmailAddress]
         public string Email { get; set; }
 
-        [Display(Name = "Eski Şifre")]
+        [Display(Name = "Mevcut Şifre")]
         [DataType(DataType.Password)]
-        public string OldPassword { get; set; }
+        public string CurrentPassword { get; set; }
         [StringLength(100)]
         [Display(Name = "Yeni Şifre")]
         [DataType(DataType.Password)]
