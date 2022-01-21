@@ -1,0 +1,50 @@
+﻿@using EcommerceLiteEntity.Models
+@model List<Product>
+@{
+    ViewBag.Title = "ProductList";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>ProductList</h2>
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-header">
+            <a href="/Product/Create" class="btn btn-info" style=" margin-right:5px;">Yeni Ürün Ekle</a>
+        </div>
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Ürün Adı</th>
+                        <th>Kayıt Tarihi</th>
+                        <th>Ürün Açıklaması</th>
+                        <th>Kategorisi</th>
+                        <th>Birim Fiyatı</th>
+                        <th>Stok Adedi</th>
+                        <th>İşlemler</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.ProductName</td>
+                            <td>@item.RegisterDate.ToString("dd.MMMM.yyyy")</td>
+                            <td>@item.Description</td>
+                            <td>@item.Category.CategoryName</td>
+                            <td>@item.Price ₺ </td>
+                            <td>@item.Quantity </td>
+                            <td>
+                                <a href="/Product/Edit/@item.Id" class="btn btn-sm btn-warning" style=" margin-right:5px;">Düzenle</a>
+                                <a href="/Product/Delete/@item.Id" class="btn btn-sm btn-danger" style=" margin-right:5px;">Sil</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
