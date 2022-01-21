@@ -2355,6 +2355,8 @@
     <Content Include="Views\Shared\_PartialAdminSideBar.cshtml" />
     <Content Include="Views\Shared\_PartialAdminSideBarMenu.cshtml" />
     <Content Include="Views\Category\CategoryList.cshtml" />
+    <Content Include="Views\Category\Create.cshtml" />
+    <Content Include="Views\Category\SubCategoryList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

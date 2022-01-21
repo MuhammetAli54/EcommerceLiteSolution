@@ -5,11 +5,9 @@
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
 }
 
-<h2>Tüm Kategoriler</h2>
-<br />
 <div class="card">
     <div class="card-header">
-        <h3 class="card-title">Kategori Listesi</h3>
+        <a href="/Category/Create" class="btn btn-info">Yeni Kategori Ekle</a>
     </div>
     <!-- /.card-header -->
     <div class="card-body">
@@ -22,7 +20,7 @@
                 </tr>
             </thead>
             <tbody>
-               @foreach (var item in Model)
+                @foreach (var item in Model)
                 {
                     <tr>
                         <td>@item.CategoryName</td>
@@ -30,9 +28,10 @@
                         <td>
                             <a href="/Category/Edit/@item.Id" class="btn btn-sm btn-default" style="background-color:gold;
                                margin-right:5px">Düzenle</a>
-                            <a href="/Category/Delete/@item.Id" class="btn btn-sm btn-default" style="background-color:#D10024;
-                               margin-right:5px">Sil</a>
-                            <a href="/Category/ProductList/@item.Id" class="btn btn-sm btn-default" style="background-color: #097da8; margin-right: 5px">Alt Kategorileri</a>
+                            <a href="/Category/Delete/@item.Id" class="btn btn-sm btn-default" style="background-color: #D10024;
+                               color: white; margin-right:5px ">Sil</a>
+                            <a href="/Category/SubCategoryList/@item.Id" class="btn btn-sm btn-default" style="background-color: #097da8;
+                               color: white; margin-right: 5px ">Alt Kategorileri</a>
                         </td>
                     </tr>
                 }
