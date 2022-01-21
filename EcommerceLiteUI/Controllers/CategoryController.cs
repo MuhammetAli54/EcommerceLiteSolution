@@ -20,14 +20,16 @@ namespace EcommerceLiteUI.Controllers
             return View(allCategories);
         }
 
-        public ActionResult Create(int? id)
+        public ActionResult Create(int? id, bool IsSendFromSubCategory = false)
         {
+            ViewBag.CategoryName = string.Empty;
             if (id != null)
             {
                 Category model = new Category()
                 {
                     Id = id.Value
                 };
+                ViewBag.CategoryName = myCategoryRepo.GetById(id.Value).CategoryName;
                 return View(model);
             }
             return View();
@@ -56,13 +58,13 @@ namespace EcommerceLiteUI.Controllers
                     newCategory.BaseCategoryId = model.Id;
                 }
                 int insertResult = myCategoryRepo.Insert(newCategory);
-                if (insertResult > 0 && model.Id==0)
+                if (insertResult > 0 && model.Id == 0)
                 {
                     return RedirectToAction("CategoryList", "Category");
                 }
                 else if (insertResult > 0 && model.Id > 0)
                 {
-                    return RedirectToAction("SubCategoryList", "Category");
+                    return RedirectToAction("SubCategoryList", "Category", new { id = model.Id });
                 }
                 else
                 {
@@ -78,6 +80,7 @@ namespace EcommerceLiteUI.Controllers
         }
 
         public ActionResult SubCategoryList(int id)
+
         {
             var subCategories = myCategoryRepo.Queryable().Where(x => x.BaseCategory != null && x.BaseCategoryId == id).ToList();
             ViewBag.CategoryId = id;

@@ -10,26 +10,46 @@
     @Html.AntiForgeryToken()
 
     <div class="form-horizontal col-6 offset-3">
-        <h4>Kategori Ekleme</h4>
+        @if (string.IsNullOrEmpty(ViewBag.CategoryName))
+        {
+            <h4>Yeni Kategori Ekle</h4>
+        }
+        else
+        {
+            <h4><span style="color:red">@ViewBag.CategoryName </span>Kategorisine Yeni Alt Kategori Ekle</h4>
+        }
         <hr />
         @Html.ValidationSummary(false, "", new { @class = "text-danger" })
 
 
         <div class="form-group">
-            @Html.Label("Kategori Adı:")
-
+            @if (string.IsNullOrEmpty(ViewBag.CategoryName))
+            {
+                @Html.Label("Kategori Adı")
+            }
+            else
+            {
+                @Html.Label("Alt Kategori Adı")
+            }
             @Html.TextBoxFor(model => model.CategoryName, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.CategoryName, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            @Html.Label("Kategori Açıklaması:")
+            @if (string.IsNullOrEmpty(ViewBag.CategoryName))
+            {
+                @Html.Label("Kategori Açıklaması")
+            }
+            else
+            {
+                @Html.Label("Alt Kategori Açıklaması")
+            }
             @Html.TextBoxFor(model => model.CategoryDescription, new { @class = "form-control" })
             @Html.ValidationMessageFor(model => model.CategoryDescription, "", new { @class = "text-danger" })
         </div>
 
         <div class="form-group">
-            <input type="submit" value="KAYDET" class="btn btn-success" style="float:right" />
+            <input type="submit" value="KAYDET" class="btn btn-info" style="float:right" />
         </div>
         <div>
             @Html.ActionLink("Listeye Geri Dön", "CategoryList", "Category")
