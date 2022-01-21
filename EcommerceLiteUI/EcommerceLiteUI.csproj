@@ -158,6 +158,7 @@
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
+    <Compile Include="Controllers\CategoryController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PartialsController.cs" />
     <Compile Include="Global.asax.cs">
@@ -2353,6 +2354,7 @@
     <Content Include="Views\Admin\DashBoard.cshtml" />
     <Content Include="Views\Shared\_PartialAdminSideBar.cshtml" />
     <Content Include="Views\Shared\_PartialAdminSideBarMenu.cshtml" />
+    <Content Include="Views\Category\CategoryList.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

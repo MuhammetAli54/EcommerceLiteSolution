@@ -1,0 +1,62 @@
+﻿@using EcommerceLiteEntity.Models
+@model List<Category>
+@{
+    ViewBag.Title = "CategoryList";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h2>Tüm Kategoriler</h2>
+<br />
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">Kategori Listesi</h3>
+    </div>
+    <!-- /.card-header -->
+    <div class="card-body">
+        <table id="example1" class="table table-bordered table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Kategori Adı</th>
+                    <th>Kategori Açıklaması</th>
+                    <th>İşlemler</th>
+                </tr>
+            </thead>
+            <tbody>
+               @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.CategoryName</td>
+                        <td>@item.CategoryDescription</td>
+                        <td>
+                            <a href="/Category/Edit/@item.Id" class="btn btn-sm btn-default" style="background-color:gold;
+                               margin-right:5px">Düzenle</a>
+                            <a href="/Category/Delete/@item.Id" class="btn btn-sm btn-default" style="background-color:#D10024;
+                               margin-right:5px">Sil</a>
+                            <a href="/Category/ProductList/@item.Id" class="btn btn-sm btn-default" style="background-color: #097da8; margin-right: 5px">Alt Kategorileri</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+            <tfoot>
+                <tr>
+                    <th>Kategori Adı</th>
+                    <th>Kategori Açıklaması</th>
+                    <th>İşlemler</th>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+    <!-- /.card-body -->
+</div>
+
+@section scripts{
+    <script>
+        $(function () {
+            $("#example1").DataTable({
+                "responsive": true,
+                "autoWidth": false,
+            });
+        });
+    </script>
+}
+

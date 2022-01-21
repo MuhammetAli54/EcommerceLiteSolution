@@ -89,6 +89,10 @@
     <Compile Include="Migrations\202201180709076_PassiveUsersTableUpdated.Designer.cs">
       <DependentUpon>202201180709076_PassiveUsersTableUpdated.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\202201210558284_CategoyTableUpdated.cs" />
+    <Compile Include="Migrations\202201210558284_CategoyTableUpdated.Designer.cs">
+      <DependentUpon>202201210558284_CategoyTableUpdated.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="MyContext.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -112,6 +116,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\202201180709076_PassiveUsersTableUpdated.resx">
       <DependentUpon>202201180709076_PassiveUsersTableUpdated.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\202201210558284_CategoyTableUpdated.resx">
+      <DependentUpon>202201210558284_CategoyTableUpdated.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
