@@ -67,6 +67,7 @@
     <Compile Include="Models\PassiveUser.cs" />
     <Compile Include="Models\PersonBase.cs" />
     <Compile Include="Models\Product.cs" />
+    <Compile Include="Models\ProductPicture.cs" />
     <Compile Include="Models\TheBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\MailModel.cs" />
