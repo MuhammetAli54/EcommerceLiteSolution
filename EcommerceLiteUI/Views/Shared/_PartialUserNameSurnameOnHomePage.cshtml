@@ -1,0 +1,12 @@
+﻿@using EcommerceLiteEntity.IdentityModels
+@model ApplicationUser
+
+@if (Model != null)
+{
+    <li><a href="/Account/UserProfile"><i class="fa fa-user-o"></i>@Model.Name @Model.Surname</a></li>
+}
+else
+{
+    <li><a href="/Account/UserProfile"><i class="fa fa-user-o"></i>HESABIM</a></li>
+}
+

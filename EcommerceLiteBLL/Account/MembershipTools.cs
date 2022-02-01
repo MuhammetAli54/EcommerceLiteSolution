@@ -56,5 +56,20 @@ namespace EcommerceLiteBLL.Account
                 return nameSurname;
             }
         }
+
+        public static ApplicationUser GetUser()
+        {
+            var id = HttpContext.Current.User.Identity.GetUserId();
+            if (string.IsNullOrEmpty(id))
+            {
+                return null;
+            }
+            else
+            {
+                var myUserManager = NewUserManager();
+                var user = myUserManager.FindById(id);
+                return user;
+            }
+        }
     }
 }

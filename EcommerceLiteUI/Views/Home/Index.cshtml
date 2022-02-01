@@ -1,32 +1,96 @@
-﻿@{
-    ViewBag.Title = "Home Page";
+﻿@using EcommerceLiteUI.Models
+@model List<ProductViewModel>
+@{
+    ViewBag.Title = "Index";
     Layout = "~/Views/Shared/_LayoutUser.cshtml";
 }
 
-<div class="jumbotron">
-    <h1>ASP.NET</h1>
-    <p class="lead">ASP.NET is a free web framework for building great Web sites and Web applications using HTML, CSS and JavaScript.</p>
-    <p><a href="https://asp.net" class="btn btn-primary btn-lg">Learn more &raquo;</a></p>
-</div>
+@if (!string.IsNullOrEmpty(TempData["AddToCart"] as String))
+{
+    <div class="alert alert-success" role="alert">
+        @TempData["AddToCart"]
+    </div>
+}
 
-<div class="row">
-    <div class="col-md-4">
-        <h2>Getting started</h2>
-        <p>
-            ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-            enables a clean separation of concerns and gives you full control over markup
-            for enjoyable, agile development.
-        </p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Get more libraries</h2>
-        <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
-    </div>
-    <div class="col-md-4">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+
+<!-- section title -->
+<div class="col-md-12">
+    <div class="section-title">
+        <h3 class="title">New Products</h3>
+        <div class="section-nav">
+            <ul class="section-tab-nav tab-nav">
+                @{
+                    for (int i = 0; i < ViewBag.CategoryList.Count; i++)
+                    {
+                        if (i == 0)
+                        {
+                            <li class="active"><a data-toggle="tab" href="#">@ViewBag.Categorylist[i].CategoryName</a></li>
+                        }
+                        else
+                        {
+                            <li><a data-toggle="tab" href="#tab1">@ViewBag.Categorylist[i].CategoryName</a></li>
+                        }
+                    }
+                }
+            </ul>
+        </div>
     </div>
 </div>
+<!-- /section title -->
+<!-- Products tab & slick -->
+<div class="col-md-12">
+    <div class="row">
+        <div class="products-tabs">
+            <!-- tab -->
+            <div id="tab1" class="tab-pane active">
+                <div class="products-slick" data-nav="#slick-nav-1">
+                    @foreach (var item in Model)
+                    {
+                        <!-- product -->
+                        <div class="product">
+                            <div class="product-img">
+                                @if (item.PicturesOfProduct.Count > 0)
+                                {
+                                    <img src="@item.PicturesOfProduct.FirstOrDefault().ProductPicture1" alt="@item.ProductName">
+                                }
+                                else
+                                {
+
+                                }
+                                <div class="product-label">
+                                    <span class="sale">-30%</span>
+                                    <span class="new">NEW</span>
+                                </div>
+                            </div>
+                            <div class="product-body">
+                                <p class="product-category">@item.CategoryOfProduct.CategoryName</p>
+                                <h3 class="product-name"><a href="/Home/ProductDetail/@item.Id">@item.ProductName</a></h3>
+                                <h4 class="product-price">@item.Price ₺ <del class="product-old-price">$990.00</del></h4>
+                                <div class="product-rating">
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <div class="product-btns">
+                                    <button class="add-to-wishlist"><i class="fa fa-heart-o"></i><span class="tooltipp">add to wishlist</span></button>
+                                    <button class="add-to-compare"><i class="fa fa-exchange"></i><span class="tooltipp">add to compare</span></button>
+                                    <button class="quick-view"><i class="fa fa-eye"></i><span class="tooltipp">quick view</span></button>
+                                </div>
+                            </div>
+                            <div class="add-to-cart">
+                                @* <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>*@
+                                <a href="/Home/AddToCart/@item.Id" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i>SEPETE EKLE</a>
+                            </div>
+                        </div>
+                        <!-- /product -->
+                    }
+                </div>
+                <div id="slick-nav-1" class="products-slick-nav"></div>
+            </div>
+            <!-- /tab -->
+        </div>
+    </div>
+</div>
+<!-- Products tab & slick -->

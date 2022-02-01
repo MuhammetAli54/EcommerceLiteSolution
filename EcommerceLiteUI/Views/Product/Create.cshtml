@@ -1,0 +1,63 @@
+﻿@using EcommerceLiteUI.Models
+@model ProductViewModel
+@{
+    ViewBag.Title = "Create";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+@using (Html.BeginForm("Create","Product",FormMethod.Post,new { @class="form-horizontal",enctype="multipart/form-data"}))
+{
+    @Html.AntiForgeryToken()
+<div class="form-horizontal col-6 offset-3">
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+
+    <div class="form-group">
+        @Html.Label("Ürün Adı")
+        @Html.TextBoxFor(model => model.ProductName, new { @class = "form-control" })
+
+    </div>
+
+    <div class="form-group">
+        @Html.Label("ürün açıklaması")
+        @Html.TextBoxFor(model => model.Description, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.Label("ürün kodu")
+        @Html.TextBoxFor(model => model.ProductCode, new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Kategori:") <br />
+        @Html.DropDownListFor(x => x.CategoryId
+            , (List<SelectListItem>)ViewBag.CategoryList,
+       new { @class = "form-control" })
+    </div>
+
+    <div class="form-group">
+        @Html.Label("fiyat:") <br />
+        @Html.TextBoxFor(x => x.Price,
+       new { @class = "form-control", type = "number", min = 0 })
+    </div>
+
+    <div class="form-group">
+        @Html.Label("Stok:") <br />
+        @Html.TextBoxFor(x => x.Quantity,
+       new { @class = "form-control", type = "number", min = 0 })
+    </div>
+
+    <div class="form-group col-md-12">
+        @Html.Label("Ürünün Fotoğrafları") <br />
+        @Html.TextBoxFor(x => x.Files, new { @class = "form-control", type = "file", multiple = true })
+    </div>
+
+    <div class="form-group">
+        <input type="submit" value="KAYDET" class="btn btn-info" style="float:right" />
+    </div>
+
+    <div>
+        @Html.ActionLink("Listeye Geri Dön", "ProductList", "Product")
+    </div>
+
+</div>
+}
+

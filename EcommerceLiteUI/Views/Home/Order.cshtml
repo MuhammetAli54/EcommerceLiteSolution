@@ -1,0 +1,50 @@
+﻿@using EcommerceLiteEntity.Models
+@model List<OrderDetail>
+@{
+    ViewBag.Title = "Order";
+    Layout = "~/Views/Shared/_LayoutUser.cshtml";
+}
+
+<div class="col-md-12">
+    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+</div>
+
+@if (!string.IsNullOrEmpty(ViewBag.OrderSuccess))
+{
+    <div class="alert alert-success" role="alert">
+        @ViewBag.OrderSuccess
+    </div>
+}
+
+
+<div class="col-12">
+    <div class="card">
+        <div class="card-body">
+            <table class="table table-hover">
+                <thead>
+                    <tr>
+                        <th>Ürün Adı</th>
+                        <th>Sipariş Tarihi</th>
+                        <th>Birim Fiyatı</th>
+                        <th>İndirim Oranı</th>
+                        <th>Toplam Tutar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@item.Product.ProductName</td>
+                            <td>@item.RegisterDate.ToString("dd.MMMM.yyyy")</td>
+                            <td>@item.ProductPrice ₺</td>
+                            <td>@item.Discount</td>
+                            <td>@item.TotalPrice ₺ </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+
