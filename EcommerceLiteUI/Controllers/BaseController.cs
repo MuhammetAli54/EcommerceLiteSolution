@@ -1,5 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
+using System.Drawing.Imaging;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
@@ -25,5 +28,16 @@ namespace EcommerceLiteUI.Controllers
             thePassword += theNumber;
             return thePassword;
         }
+
+        [NonAction]
+        public static byte[] BitmapToByteArray(Bitmap bitmap)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                bitmap.Save(ms, ImageFormat.Png);
+                return ms.ToArray();
+            }
+        }
+
     }
 }

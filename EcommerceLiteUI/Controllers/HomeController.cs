@@ -1,17 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using System.Web;
 using System.Web.Mvc;
 using EcommerceLiteBLL.Account;
 using EcommerceLiteBLL.Repository;
+using EcommerceLiteBLL.Settings;
 using EcommerceLiteEntity.Models;
+using EcommerceLiteEntity.ViewModels;
 using EcommerceLiteUI.Models;
 using Mapster;
+using QRCoder;
 
 namespace EcommerceLiteUI.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         //Global alan
         CategoryRepo myCategoryRepo = new CategoryRepo();
@@ -24,7 +29,7 @@ namespace EcommerceLiteUI.Controllers
         {
             var categoryList = myCategoryRepo.Queryable().Where(x => x.BaseCategoryId == null).ToList();
             ViewBag.CategoryList = categoryList;
-            var productList = myProductRepo.GetAll();
+            var productList = myProductRepo.Queryable().Where(x => x.Quantity >= 1).ToList();
             List<ProductViewModel> model = new List<ProductViewModel>();
             foreach (var item in productList)
             {
@@ -93,7 +98,7 @@ namespace EcommerceLiteUI.Controllers
         }
 
         [Authorize]
-        public ActionResult Buy()
+        public async  Task<ActionResult> Buy()
         {
             try
             {
@@ -113,6 +118,7 @@ namespace EcommerceLiteUI.Controllers
                         int orderInsertResult = myOrderRepo.Insert(newOrder);
                         if (orderInsertResult > 0)
                         {
+                            bool isSuccess = false;
                             foreach (var item in shoppingCart)
                             {
                                 OrderDetail newOrderDetail = new OrderDetail()
@@ -126,7 +132,7 @@ namespace EcommerceLiteUI.Controllers
                                 };
                                 if (newOrderDetail.Discount > 0)
                                 {
-                                    newOrderDetail.TotalPrice = newOrderDetail.Quantity * (newOrderDetail.ProductPrice -(newOrderDetail.ProductPrice * Convert.ToDecimal(newOrderDetail.Discount/100)));
+                                    newOrderDetail.TotalPrice = newOrderDetail.Quantity * (newOrderDetail.ProductPrice - (newOrderDetail.ProductPrice * Convert.ToDecimal(newOrderDetail.Discount / 100)));
                                 }
                                 else
                                 {
@@ -135,8 +141,51 @@ namespace EcommerceLiteUI.Controllers
                                 int detailInsertResult = myOrderDetailRepo.Insert(newOrderDetail);
                                 if (detailInsertResult > 0)
                                 {
-                                    return RedirectToAction("Order", "Home", new { id = newOrder.Id });
+                                    isSuccess = true;
                                 }
+                            }
+                            if (isSuccess)
+                            {
+                                //Email ile QR gönderilecek
+                                #region SendEmail
+
+                                QRCodeGenerator qrGenerator = new QRCodeGenerator();
+                                QRCodeData qrData = qrGenerator.CreateQrCode(newOrder.OrderNumber, QRCodeGenerator.ECCLevel.Q);
+                                QRCode qrCode = new QRCode(qrData);
+                                Bitmap qrBitmap = qrCode.GetGraphic(64);
+                                byte[] bitmapArray = BitmapToByteArray(qrBitmap);
+                                string qrUri = string.Format("data:image/png;base64,{0}", Convert.ToBase64String(bitmapArray));
+
+                                List<OrderDetail> orderDetailList =
+                   new List<OrderDetail>();
+                                orderDetailList = myOrderDetailRepo.Queryable()
+                                    .Where(x => x.OrderId == newOrder.Id).ToList();
+
+                                string message = $"Merhaba {user.Name} {user.Surname} <br/><br/>" +
+                                                   $"{orderDetailList.Count} adet ürünlerinizin siparişini aldık.<br/><br/>" +
+                                                   $"Toplam Tutar:{orderDetailList.Sum(x => x.TotalPrice).ToString()} ₺ <br/> <br/>" +
+                                                   $"<table><tr><th>Ürün Adı</th><th>Adet</th><th>Birim Fiyat</th><th>Toplam</th></tr>";
+                                foreach (var item in orderDetailList)
+                                {
+                                    message += $"<tr><td>{myProductRepo.GetById(item.ProductId).ProductName}</td><td>{item.Quantity}</td><td>{item.TotalPrice}</td></tr>";
+                                }
+                                message += "</table><br/>Siparişinize ait QR kodunuz: <br/><br/><br/>";
+                                message += $"<a href='/Home/Order/{newOrder.Id}'><img src=\"{qrUri}\" height=250px;  width=250px; class='img-thumbnail' /></a>";
+                                await SiteSettings.SendMail(new MailModel()
+                                {
+                                    To = user.Email,
+                                    Subject = "ECommerceLite - Siparişiniz alındı",
+                                    Message = message
+
+                                });
+
+                                #endregion
+
+                                return RedirectToAction("Order", "Home", new { id = newOrder.Id });
+                            }
+                            else
+                            {
+                                //sonra bakılacak
                             }
                         }
                     }
@@ -151,16 +200,55 @@ namespace EcommerceLiteUI.Controllers
             }
         }
 
+      //private void SendOrderMailWithQRCode(int id)
+      //  {
+      //      try
+      //      {
+      //          Order customerOrder = myOrderRepo.GetById(id);
+      //          List<OrderDetail> orderDetailList = new List<OrderDetail>();
+      //          orderDetailList = myOrderDetailRepo.Queryable().Where(x => x.OrderId == customerOrder.Id).ToList();
+      //          QRCodeGenerator qrGenerator = new QRCodeGenerator();
+      //          QRCodeData qrData = qrGenerator.CreateQrCode(customerOrder.OrderNumber, QRCodeGenerator.ECCLevel.Q);
+      //          QRCode qrCode = new QRCode(qrData);
+      //          Bitmap qrBitmap = qrCode.GetGraphic(60);
+      //          byte[] bitmapArray = BitmapToByteArray(qrBitmap);
+      //          string qrUri = string.Format("data:image/png;base64,{0}", Convert.ToBase64String(bitmapArray));
+
+      //          var user = MembershipTools.GetUser();
+      //          string message = $"Merhaba {user.Name} {user.Surname} <br/>" +
+      //                             $"{orderDetailList.Count} adet ürünlerinizin siparişini aldık.<br/>" +
+      //                             $"Toplam Tutar:{orderDetailList.Sum(x => x.TotalPrice).ToString()} ₺ <br/> <br/>" +
+      //                             $"<table><tr><th>Ürün Adı</th><th>Adet</th><th>Birim Fiyat</th><th>Toplam</th></tr>";
+      //          foreach (var item in orderDetailList)
+      //          {
+      //              message += $"<tr><td>{myProductRepo.GetById(item.ProductId).ProductName}</td><td>{item.Quantity}</td><td>{item.TotalPrice}</td></tr>";
+      //          }
+      //          message += "</table><br/>Siparişinize ait QR kodunuz: <br/>";
+      //          message += $"<a href='/Home/Order/{customerOrder.Id}'><img src='{qrUri}' height=250px;  width=250px; class='img-thumbnail' /></a>";
+      //          await SiteSettings.SendMail(new MailModel()
+      //          {
+      //              To = user.Email,
+      //              Subject = "ECommerceLite - Siparişiniz alındı",
+      //              Message = message
+
+      //          });
+      //      }
+      //      catch (Exception ex)
+      //      {
+      //          // ex loglanacak
+      //      }
+      //  }
+
         [Authorize]
-        public ActionResult Order(int id)
+        public ActionResult Order(int? id)
         {
             try
             {
-                if (id>0)
+                if (id > 0)
                 {
-                    Order customerOrder = myOrderRepo.GetById(id);
+                    Order customerOrder = myOrderRepo.GetById(id.Value);
                     List<OrderDetail> orderDetails = new List<OrderDetail>();
-                    if (customerOrder !=null)
+                    if (customerOrder != null)
                     {
                         orderDetails = myOrderDetailRepo.Queryable().Where(x => x.OrderId == customerOrder.Id).ToList();
                         foreach (var item in orderDetails)
@@ -168,6 +256,7 @@ namespace EcommerceLiteUI.Controllers
                             item.Product = myProductRepo.GetById(item.ProductId);
                         }
                         ViewBag.OrderSuccess = "Siparişiniz başarıyla alınmıştır.";
+                        Session["ShoppingCart"] = null;
                         return View(orderDetails);
                     }
                     else
