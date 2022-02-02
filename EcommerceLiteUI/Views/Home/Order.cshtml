@@ -25,6 +25,7 @@
                     <tr>
                         <th>Ürün Adı</th>
                         <th>Sipariş Tarihi</th>
+                        <th>Ürün Adedi</th>
                         <th>Birim Fiyatı</th>
                         <th>İndirim Oranı</th>
                         <th>Toplam Tutar</th>
@@ -36,6 +37,7 @@
                         <tr>
                             <td>@item.Product.ProductName</td>
                             <td>@item.RegisterDate.ToString("dd.MMMM.yyyy")</td>
+                            <td>@item.Quantity</td>
                             <td>@item.ProductPrice ₺</td>
                             <td>@item.Discount</td>
                             <td>@item.TotalPrice ₺ </td>
