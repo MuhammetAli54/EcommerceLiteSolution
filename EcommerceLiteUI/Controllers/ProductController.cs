@@ -9,6 +9,7 @@ using EcommerceLiteUI.Models;
 using Mapster;
 using EcommerceLiteBLL.Settings;
 using System.IO;
+using PagedList;
 
 namespace EcommerceLiteUI.Controllers
 {
@@ -18,10 +19,19 @@ namespace EcommerceLiteUI.Controllers
         ProductRepo myProductRepo = new ProductRepo();
         CategoryRepo myCategoryRepo = new CategoryRepo();
         ProductPictureRepo myProductPictureRepo = new ProductPictureRepo();
-        public ActionResult ProductList()
+        public ActionResult ProductList(int page=1, string search="")
         {
-            var allProductList = myProductRepo.GetAll();
-            return View(allProductList);
+            List<Product> allProductList = new List<Product>();
+            if (string.IsNullOrEmpty(search))
+            {
+                allProductList = myProductRepo.GetAll();
+            }
+            else
+            {
+                allProductList = myProductRepo.Queryable().Where(x => x.ProductName.Contains(search)).ToList();
+            }
+
+            return View(allProductList.ToPagedList(page,3));
         }
 
         [HttpGet]
@@ -135,6 +145,20 @@ namespace EcommerceLiteUI.Controllers
                 ModelState.AddModelError("", "Beklenmedik bir hata oluştu!");
                 //ex loglanacak
                 return View(model);
+            }
+        }
+
+        public ActionResult CategoryProducts()
+        {
+            try
+            {
+                var list = myCategoryRepo.GetBaseCategoriesProductCount();
+                return View(list);
+            }
+            catch (Exception ex)
+            {
+                //yarın düzenlenecek
+                return View();
             }
         }
     }

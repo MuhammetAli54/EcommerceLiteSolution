@@ -71,6 +71,7 @@
     <Compile Include="Models\TheBase.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ViewModels\MailModel.cs" />
+    <Compile Include="ViewModels\ProductCountModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
