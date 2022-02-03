@@ -14,6 +14,7 @@ namespace EcommerceLiteUI.Controllers
     {
         //Global alan
         CategoryRepo myCategoryRepo = new CategoryRepo();
+        ProductRepo myProductRepo = new ProductRepo();
 
         public PartialViewResult AdminSideBarResult()
         {
@@ -54,6 +55,12 @@ namespace EcommerceLiteUI.Controllers
         {
             TempData["AllCategoriesCount"] = myCategoryRepo.Queryable().Where(x => x.BaseCategory == null).ToList().Count;
             return PartialView("_PartialAdminSideBarCategories");
+        }
+
+        public PartialViewResult AdminSideBarProducts()
+        {
+            TempData["CategoryProductsCount"] = myProductRepo.GetAll().Count;
+            return PartialView("_PartialAdminSideBarProducts");
         }
     }
 }

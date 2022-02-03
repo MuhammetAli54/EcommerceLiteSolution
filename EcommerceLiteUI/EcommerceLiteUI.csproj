@@ -2386,6 +2386,7 @@
     <Content Include="Views\Home\Order.cshtml" />
     <Content Include="Views\Shared\_PartialAdminSideBarCategories.cshtml" />
     <Content Include="Views\Product\CategoryProducts.cshtml" />
+    <Content Include="Views\Shared\_PartialAdminSideBarProducts.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
