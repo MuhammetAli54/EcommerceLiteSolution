@@ -19,7 +19,7 @@ namespace EcommerceLiteUI.Controllers
         ProductRepo myProductRepo = new ProductRepo();
         CategoryRepo myCategoryRepo = new CategoryRepo();
         ProductPictureRepo myProductPictureRepo = new ProductPictureRepo();
-        public ActionResult ProductList(int page=1, string search="")
+        public ActionResult ProductList(int page = 1, string search = "")
         {
             List<Product> allProductList = new List<Product>();
             if (string.IsNullOrEmpty(search))
@@ -31,19 +31,19 @@ namespace EcommerceLiteUI.Controllers
                 allProductList = myProductRepo.Queryable().Where(x => x.ProductName.Contains(search)).ToList();
             }
 
-            return View(allProductList.ToPagedList(page,3));
+            return View(allProductList.ToPagedList(page, 3));
         }
 
         [HttpGet]
         public ActionResult Create()
         {
-            List<SelectListItem> allCategories = new List<SelectListItem>();
-            myCategoryRepo.GetAll().ForEach(x => allCategories.Add(new SelectListItem()
+            List<SelectListItem> subCategories = new List<SelectListItem>();
+            myCategoryRepo.Queryable().Where(x => x.BaseCategoryId != null).ToList().ForEach(x => subCategories.Add(new SelectListItem()
             {
                 Text = x.CategoryName,
                 Value = x.Id.ToString()
             }));
-            ViewBag.CategoryList = allCategories;
+            ViewBag.CategoryList = subCategories;
             return View();
         }
 
@@ -53,13 +53,13 @@ namespace EcommerceLiteUI.Controllers
         {
             try
             {
-                List<SelectListItem> allCategories = new List<SelectListItem>();
-                myCategoryRepo.GetAll().ForEach(x => allCategories.Add(new SelectListItem()
+                List<SelectListItem> subCategories = new List<SelectListItem>();
+                myCategoryRepo.Queryable().Where(x => x.BaseCategoryId != null).ToList().ForEach(x => subCategories.Add(new SelectListItem()
                 {
                     Text = x.CategoryName,
                     Value = x.Id.ToString()
                 }));
-                ViewBag.CategoryList = allCategories;
+                ViewBag.CategoryList = subCategories;
                 if (!ModelState.IsValid)
                 {
                     ModelState.AddModelError("", "Veri girişleriniz düzgün olmalıdır!");
@@ -94,7 +94,7 @@ namespace EcommerceLiteUI.Controllers
                                     Directory.CreateDirectory(directoryPath);
                                 }
                                 item.SaveAs(filePath);
-                                if (counter==1)
+                                if (counter == 1)
                                 {
                                     productPicture.ProductPicture1 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
                                 }
@@ -119,7 +119,7 @@ namespace EcommerceLiteUI.Controllers
                         }
 
                         int pictureInsertResult = myProductPictureRepo.Insert(productPicture);
-                        if (pictureInsertResult>0)
+                        if (pictureInsertResult > 0)
                         {
                             return RedirectToAction("ProductList", "Product");
                         }

@@ -2,16 +2,29 @@
     <a href="/Product/ProductList" class="nav-link">
         <i class="nav-icon fas fa-copy"></i>
         <p>
-            Tüm Ürünler
+            Ürünler
             <i class="fas fa-angle-left right"></i>
-            <span class="badge badge-info right">6</span>
         </p>
     </a>
     <ul class="nav nav-treeview">
         <li class="nav-item">
+            <a href="/Product/ProductList" class="nav-link">
+                <i class="far fa-circle nav-icon"></i>
+                <p>
+                    Tüm Ürünler
+                </p>
+            </a>
+        </li>
+    </ul>
+
+    <ul class="nav nav-treeview">
+        <li class="nav-item">
             <a href="/Product/CategoryProducts" class="nav-link">
                 <i class="far fa-circle nav-icon"></i>
-                <p>Kategoriye Göre</p>
+                <p>
+                    Kategoriye Göre
+                    <span class="badge badge-info right">@TempData["CategoryProductsCount"]</span>
+                </p>
             </a>
         </li>
     </ul>
@@ -24,4 +37,3 @@
         </li>
     </ul>
 </li>
-

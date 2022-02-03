@@ -177,6 +177,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\CategoryController.cs" />
+    <Compile Include="Controllers\ChartController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PartialsController.cs" />
     <Compile Include="Controllers\ProductController.cs" />
@@ -2391,6 +2392,7 @@
   <ItemGroup>
     <Folder Include="App_Data\" />
     <Folder Include="Views\Base\" />
+    <Folder Include="Views\Chart\" />
     <Folder Include="Views\Partials\" />
   </ItemGroup>
   <ItemGroup>
