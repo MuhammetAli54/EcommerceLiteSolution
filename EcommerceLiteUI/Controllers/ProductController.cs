@@ -10,6 +10,7 @@ using Mapster;
 using EcommerceLiteBLL.Settings;
 using System.IO;
 using PagedList;
+using EcommerceLiteBLL.Account;
 
 namespace EcommerceLiteUI.Controllers
 {
@@ -19,8 +20,18 @@ namespace EcommerceLiteUI.Controllers
         ProductRepo myProductRepo = new ProductRepo();
         CategoryRepo myCategoryRepo = new CategoryRepo();
         ProductPictureRepo myProductPictureRepo = new ProductPictureRepo();
-        public ActionResult ProductList(int page = 1, string search = "")
+        public ActionResult ProductList(int page = 1, string search = "",bool isNew = false)
         {
+            List<SelectListItem> subCategories = new List<SelectListItem>();
+            myCategoryRepo.Queryable()
+                .Where(x => x.BaseCategoryId != null)
+                .ToList().ForEach(x => subCategories.Add(new SelectListItem()
+                {
+                    Text = x.CategoryName,
+                    Value = x.Id.ToString()
+                }));
+            ViewBag.CategoryList = subCategories;
+
             List<Product> allProductList = new List<Product>();
             if (string.IsNullOrEmpty(search))
             {
@@ -30,7 +41,14 @@ namespace EcommerceLiteUI.Controllers
             {
                 allProductList = myProductRepo.Queryable().Where(x => x.ProductName.Contains(search)).ToList();
             }
+            if (isNew)
+            {
+                allProductList = myProductRepo.GetAll();
+                allProductList = allProductList.Where(x => x.RegisterDate >= DateTime.Now.AddDays(-1)).ToList();
+            }
 
+            var user = MembershipTools.GetNameSurname();
+            LogManager.LogMessage("geldik", userInfo: user, pageInfo: "Product/ProductList");
             return View(allProductList.ToPagedList(page, 3));
         }
 
@@ -143,7 +161,8 @@ namespace EcommerceLiteUI.Controllers
             catch (Exception ex)
             {
                 ModelState.AddModelError("", "Beklenmedik bir hata oluştu!");
-                //ex loglanacak
+                var user = MembershipTools.GetNameSurname();
+                LogManager.LogMessage(ex.ToString(), userInfo: user, pageInfo: "Product/Create");
                 return View(model);
             }
         }
@@ -157,7 +176,9 @@ namespace EcommerceLiteUI.Controllers
             }
             catch (Exception ex)
             {
-                //yarın düzenlenecek
+                var user = MembershipTools.GetNameSurname();
+                LogManager.LogMessage(ex.ToString(), userInfo: user, pageInfo: "Product/CategoryProducts");
+
                 return View();
             }
         }
@@ -168,31 +189,104 @@ namespace EcommerceLiteUI.Controllers
         {
             try
             {
+                if (!ModelState.IsValid)
+                {
+                    TempData["ProductModalError"] = "Veri girişleri düzgün olmalıdır!";
+                    return RedirectToAction("ProductList", "Product");
+                }
                 var product = myProductRepo.GetById(model.Id);
                 product.ProductName = model.ProductName;
                 product.Description = model.Description;
                 product.Quantity = model.Quantity;
                 product.Price = model.Price;
-                if (model.Files.Any())
-                {
-                    //
-                }
+                product.CategoryId = model.CategoryId;
+                //if (model.Files.Any())
+                //{
+                //    //Önce sildik
+                //    var pictureList =
+                //          myProductPictureRepo.Queryable()
+                //          .Where(x => x.ProductId == model.Id).ToList();
+                //    foreach (var item in pictureList)
+                //    {
+                //        myProductPictureRepo.Delete(item);
+                //    }
+                //    //sonra yeni eklediklerini oluşturacağız.
+                //    ProductPicture productPicture = new ProductPicture();
+                //    productPicture.ProductId = model.Id;
+                //    productPicture.RegisterDate = DateTime.Now;
+                //    int counter = 1;
+                //    foreach (var item in model.Files)
+                //    {
+                //        if (item != null && item.ContentType.Contains("image") && item.ContentLength > 0)
+                //        {
+                //            string filename = SiteSettings.UrlFormatConverter(model.ProductName).ToLower().Replace("-", "");
+                //            string extName = Path
+                //                .GetExtension(item.FileName);
+
+                //            string guid = Guid.NewGuid()
+                //                .ToString().Replace("-", "");
+                //            var directoryPath = Server.MapPath($"~/ProductPictures/{filename}/{model.ProductCode}");
+                //            var filePath = Server.MapPath($"~/ProductPictures/{filename}/{model.ProductCode}/") + filename + counter + "-" + guid + extName;
+                //            if (!Directory.Exists(directoryPath))
+                //            {
+                //                Directory.CreateDirectory(directoryPath);
+                //            }
+                //            item.SaveAs(filePath);
+                //            if (counter == 1)
+                //            {
+                //                productPicture.ProductPicture1 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
+                //            }
+                //            if (counter == 2)
+                //            {
+                //                productPicture.ProductPicture2 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
+                //            }
+                //            if (counter == 3)
+                //            {
+                //                productPicture.ProductPicture3 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
+                //            }
+                //            if (counter == 4)
+                //            {
+                //                productPicture.ProductPicture4 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
+                //            }
+                //            if (counter == 5)
+                //            {
+                //                productPicture.ProductPicture5 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
+                //            }
+                //        }
+                //        counter++;
+                //    }
+                //    int pictureInsertResult =
+                //        myProductPictureRepo.Insert(productPicture);
+                //    if (pictureInsertResult == 0)
+                //    {
+                //        TempData["ProductModalError"] = "Ürün eklendi ama ürüne ait fotoğraflar eklenirken bir hata oluştu. Fotoğraf eklemek için tekrar deneyiniz!";
+                //    }
+                //    else
+                //    {
+                //        TempData["ProductModalError"] = string.Empty;
+                //    }
+                //}
+
                 int updateResult = myProductRepo.Update();
-                if (updateResult>0)
+                if (updateResult > 0)
                 {
                     return RedirectToAction("ProductList", "Product");
                 }
                 else
                 {
+                    //geçici
                     return RedirectToAction("ProductList", "Product");
 
                 }
+
             }
             catch (Exception ex)
             {
-                //ex loglanacak
+                var user = MembershipTools.GetNameSurname();
+                LogManager.LogMessage(ex.ToString(),
+                    userInfo: user, pageInfo: "Product/Edit");
+                //geçici
                 return RedirectToAction("ProductList", "Product");
-
             }
         }
 

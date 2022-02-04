@@ -8,6 +8,15 @@
 }
 
 <h2>Sistemdeki Ürünler</h2>
+@if (!string.IsNullOrEmpty(TempData["ProductModalError"] as String))
+{
+<div class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>DİKKAT</strong>@TempData["ProductModalError"]
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+}
 <br />
 <div class="col-md-12">
     @using (Html.BeginForm("ProductList", "Product", FormMethod.Get))
@@ -87,35 +96,48 @@
                     @class = "form-horizontal"
                 }))
                 {
-                <div class="col-md-12">
-                    @Html.AntiForgeryToken()
-                    @Html.ValidationSummary(false, "", new { @class = "text-danger" })
-                    <input type="hidden" name="Id" id="ProductId" class="form-control" />
-                    <div class="form-group">
-                        @Html.Label("Ürün Adı")
-                        <input id="ProductName" name="ProductName" class="form-control" />
+                    <div class="col-md-12">
+                        @Html.AntiForgeryToken()
+                        @Html.ValidationSummary(false, "", new { @class = "text-danger" })
+                        <input type="hidden" name="Id" id="ProductId" class="form-control" />
+                        <div class="form-group">
+                            @Html.Label("Ürün Adı")
+                            <input id="ProductName" name="ProductName" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Ürün Açıklaması")
+                            <input id="Description" name="Description" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="CategoryId">Kategori Seç:</label>
+                            <select class="form-control" id="category" name="CategoryId">
+                                @foreach (var item in ViewBag.CategoryList)
+                                {
+                                    <option value="@item.Value">@item.Text</option>
+                                }
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Ürün Kodu")
+                            <input id="ProductCode" name="ProductCode" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Ürün Adet")
+                            <input id="Quantity" name="Quantity" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            @Html.Label("Fiyat")
+                            <input id="Price" name="Price" class="form-control" />
+                        </div>
+                        <div class="form-group">
+                            <label for="Files">Dosya Seçiniz:</label>
+                            <input type="file" id="Files" name="Files" multiple />
+                        </div>
+                        <div class="form-group">
+                            <input type="button" value="KAPAT" class="btn btn-danger" data-dismiss="modal" style="float:left" />
+                            <input type="submit" value="KAYDET" class="btn btn-info" style="float:right" />
+                        </div>
                     </div>
-                    <div class="form-group">
-                        @Html.Label("Ürün Açıklması")
-                        <input id="Description" name="Description" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        @Html.Label("Ürün Kodu")
-                        <input id="ProductCode" name="ProductCode" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        @Html.Label("Ürün Adet")
-                        <input id="Quantity" name="Quantity" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        @Html.Label("Fiyat")
-                        <input id="Price" name="Price" class="form-control" />
-                    </div>
-                    <div class="form-group">
-                        <input type="button" value="KAPAT" class="btn btn-danger" data-dismiss="modal" style="float:left" />
-                        <input type="submit" value="KAYDET" class="btn btn-info" style="float:right" />
-                    </div>
-                </div>
                 }
 
             </div>
@@ -141,6 +163,7 @@
                         $('#Price').val(res.data.Price);
                         $('#Quantity').val(res.data.Quantity);
                         $('#ProductId').val(res.data.Id);
+                        $('#category').val(res.data.CategoryId);
                     }
                     else {
                     }
