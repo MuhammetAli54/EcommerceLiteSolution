@@ -1,0 +1,192 @@
+﻿@using EcommerceLiteEntity.ViewModels
+@model List<ProductCountModel>
+@{
+    ViewBag.Title = "DashBoard2";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="row">
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-info">
+            <div class="inner">
+                <h3>@ViewBag.NewOrderCount</h3>
+
+                <p>Yeni Siparişler</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-bag"></i>
+            </div>
+            <a href="/Admin/Orders" class="small-box-footer"> Detaylı Bilgi <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-success">
+            <div class="inner">
+                <h3>53<sup style="font-size: 20px">%</sup></h3>
+
+                <p>Bounce Rate</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-stats-bars"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-warning">
+            <div class="inner">
+                <h3>44</h3>
+
+                <p>User Registrations</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-person-add"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+    <div class="col-lg-3 col-6">
+        <!-- small box -->
+        <div class="small-box bg-danger">
+            <div class="inner">
+                <h3>65</h3>
+
+                <p>Unique Visitors</p>
+            </div>
+            <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+            </div>
+            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+        </div>
+    </div>
+    <!-- ./col -->
+</div>
+<br /><br /><br />
+      <div class="wrapper">
+          <h2 style="text-align:center; color:#0094ff; font-weight:bold" >Türler</h2><br />
+          <div class="pie-charts">
+              <div class="pieID--operations pie-chart--wrapper">
+                  <div class="pie-chart" style="transform:scale(1.3)">
+                      <div class="pie-chart__pie"></div>
+                      <ul class="pie-chart__legend">
+                          @foreach (var item in Model)
+                          {
+                              <li><em>@item.BaseCategoryName</em><span>@item.ProductCount</span></li>
+                          }
+                      </ul>
+                  </div>
+              </div>
+          </div>
+      </div>
+
+@section scripts{
+    <link href="~/Content/style.css" rel="stylesheet" />
+    <script>
+
+    function sliceSize(dataNum, dataTotal) {
+        return (dataNum / dataTotal) * 360;
+    }
+
+    function addSlice(id, sliceSize, pieElement, offset, sliceID, color) {
+        $(pieElement).append(
+            "<div class='slice " + sliceID + "'><span></span></div>"
+        );
+        var offset = offset - 1;
+        var sizeRotation = -179 + sliceSize;
+
+        $(id + " ." + sliceID).css({
+            transform: "rotate(" + offset + "deg) translate3d(0,0,0)"
+        });
+
+        $(id + " ." + sliceID + " span").css({
+            transform: "rotate(" + sizeRotation + "deg) translate3d(0,0,0)",
+            "background-color": color
+        });
+    }
+
+    function iterateSlices(
+        id,
+        sliceSize,
+        pieElement,
+        offset,
+        dataCount,
+        sliceCount,
+        color
+    ) {
+        var maxSize = 179,
+            sliceID = "s" + dataCount + "-" + sliceCount;
+        if (sliceSize <= maxSize) {
+            addSlice(id, sliceSize, pieElement, offset, sliceID, color);
+        } else {
+            addSlice(id, maxSize, pieElement, offset, sliceID, color);
+            iterateSlices(
+                id,
+                sliceSize - maxSize,
+                pieElement,
+                offset + maxSize,
+                dataCount,
+                sliceCount + 1,
+                color
+            );
+        }
+    }
+    function createPie(id) {
+        var listData = [],
+            listTotal = 0,
+            offset = 0,
+            i = 0,
+            pieElement = id + " .pie-chart__pie";
+        dataElement = id + " .pie-chart__legend";
+
+        color = [
+            "cornflowerblue",
+            "olivedrab",
+            "orange",
+            "tomato",
+            "crimson",
+            "purple",
+            "turquoise",
+            "forestgreen",
+            "navy"
+        ];
+        color = shuffle(color);
+        $(dataElement + " span").each(function () {
+            listData.push(Number($(this).html()));
+        });
+        for (i = 0; i < listData.length; i++) {
+            listTotal += listData[i];
+        }
+        for (i = 0; i < listData.length; i++) {
+            var size = sliceSize(listData[i], listTotal);
+            iterateSlices(id, size, pieElement, offset, i, 0, color[i]);
+            $(dataElement + " li:nth-child(" + (i + 1) + ")").css(
+                "border-color",
+                color[i]
+            );
+            offset += size;
+        }
+    }
+    function shuffle(a) {
+        var j, x, i;
+        for (i = a.length; i; i--) {
+            j = Math.floor(Math.random() * i);
+            x = a[i - 1];
+            a[i - 1] = a[j];
+            a[j] = x;
+        }
+        return a;
+    }
+    function createPieCharts() {
+        createPie(".pieID--micro-skills");
+        createPie(".pieID--categories");
+        createPie(".pieID--operations");
+    }
+    createPieCharts();
+    </script>
+}
