@@ -81,7 +81,14 @@
                             </div>
                             <div class="add-to-cart">
                                 @* <button class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i> add to cart</button>*@
-                                <a href="/Home/AddToCart/@item.Id" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i>SEPETE EKLE</a>
+                                @if (item.Quantity>0)
+                                {
+                                    <a href="/Home/AddToCart/@item.Id" class="add-to-cart-btn"><i class="fa fa-shopping-cart"></i>SEPETE EKLE</a>
+                                }
+                                else
+                                {
+                                <span style="background-color:slategray; color:white; padding:3px; font-weight:bold; border:1px; border-radius:10px">Ürün Stokta Yok!</span>
+                                }
                             </div>
                         </div>
                         <!-- /product -->

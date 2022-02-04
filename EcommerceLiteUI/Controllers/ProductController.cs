@@ -20,7 +20,7 @@ namespace EcommerceLiteUI.Controllers
         ProductRepo myProductRepo = new ProductRepo();
         CategoryRepo myCategoryRepo = new CategoryRepo();
         ProductPictureRepo myProductPictureRepo = new ProductPictureRepo();
-        public ActionResult ProductList(int page = 1, string search = "",bool isNew = false)
+        public ActionResult ProductList(int page = 1, string search = "", bool isNew = false)
         {
             List<SelectListItem> subCategories = new List<SelectListItem>();
             myCategoryRepo.Queryable()
@@ -88,7 +88,7 @@ namespace EcommerceLiteUI.Controllers
                 if (insertResult > 0)
                 {
                     //ürünün fotoğrafları da eklensin
-                    if (model.Files.Any())
+                    if (model.Files.Count(x => x != null) > 0)
                     {
                         ProductPicture productPicture = new ProductPicture();
                         productPicture.ProductId = newProduct.Id;
@@ -200,72 +200,72 @@ namespace EcommerceLiteUI.Controllers
                 product.Quantity = model.Quantity;
                 product.Price = model.Price;
                 product.CategoryId = model.CategoryId;
-                //if (model.Files.Any())
-                //{
-                //    //Önce sildik
-                //    var pictureList =
-                //          myProductPictureRepo.Queryable()
-                //          .Where(x => x.ProductId == model.Id).ToList();
-                //    foreach (var item in pictureList)
-                //    {
-                //        myProductPictureRepo.Delete(item);
-                //    }
-                //    //sonra yeni eklediklerini oluşturacağız.
-                //    ProductPicture productPicture = new ProductPicture();
-                //    productPicture.ProductId = model.Id;
-                //    productPicture.RegisterDate = DateTime.Now;
-                //    int counter = 1;
-                //    foreach (var item in model.Files)
-                //    {
-                //        if (item != null && item.ContentType.Contains("image") && item.ContentLength > 0)
-                //        {
-                //            string filename = SiteSettings.UrlFormatConverter(model.ProductName).ToLower().Replace("-", "");
-                //            string extName = Path
-                //                .GetExtension(item.FileName);
+                if (model.Files.Count(x => x != null) > 0)
+                {
+                    //Önce sildik
+                    var pictureList =
+                          myProductPictureRepo.Queryable()
+                          .Where(x => x.ProductId == model.Id).ToList();
+                    foreach (var item in pictureList)
+                    {
+                        myProductPictureRepo.Delete(item);
+                    }
+                    //sonra yeni eklediklerini oluşturacağız.
+                    ProductPicture productPicture = new ProductPicture();
+                    productPicture.ProductId = model.Id;
+                    productPicture.RegisterDate = DateTime.Now;
+                    int counter = 1;
+                    foreach (var item in model.Files)
+                    {
+                        if (item != null && item.ContentType.Contains("image") && item.ContentLength > 0)
+                        {
+                            string filename = SiteSettings.UrlFormatConverter(model.ProductName).ToLower().Replace("-", "");
+                            string extName = Path
+                                .GetExtension(item.FileName);
 
-                //            string guid = Guid.NewGuid()
-                //                .ToString().Replace("-", "");
-                //            var directoryPath = Server.MapPath($"~/ProductPictures/{filename}/{model.ProductCode}");
-                //            var filePath = Server.MapPath($"~/ProductPictures/{filename}/{model.ProductCode}/") + filename + counter + "-" + guid + extName;
-                //            if (!Directory.Exists(directoryPath))
-                //            {
-                //                Directory.CreateDirectory(directoryPath);
-                //            }
-                //            item.SaveAs(filePath);
-                //            if (counter == 1)
-                //            {
-                //                productPicture.ProductPicture1 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
-                //            }
-                //            if (counter == 2)
-                //            {
-                //                productPicture.ProductPicture2 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
-                //            }
-                //            if (counter == 3)
-                //            {
-                //                productPicture.ProductPicture3 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
-                //            }
-                //            if (counter == 4)
-                //            {
-                //                productPicture.ProductPicture4 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
-                //            }
-                //            if (counter == 5)
-                //            {
-                //                productPicture.ProductPicture5 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
-                //            }
-                //        }
-                //        counter++;
-                //    }
-                //    int pictureInsertResult =
-                //        myProductPictureRepo.Insert(productPicture);
-                //    if (pictureInsertResult == 0)
-                //    {
-                //        TempData["ProductModalError"] = "Ürün eklendi ama ürüne ait fotoğraflar eklenirken bir hata oluştu. Fotoğraf eklemek için tekrar deneyiniz!";
-                //    }
-                //    else
-                //    {
-                //        TempData["ProductModalError"] = string.Empty;
-                //    }
-                //}
+                            string guid = Guid.NewGuid()
+                                .ToString().Replace("-", "");
+                            var directoryPath = Server.MapPath($"~/ProductPictures/{filename}/{model.ProductCode}");
+                            var filePath = Server.MapPath($"~/ProductPictures/{filename}/{model.ProductCode}/") + filename + counter + "-" + guid + extName;
+                            if (!Directory.Exists(directoryPath))
+                            {
+                                Directory.CreateDirectory(directoryPath);
+                            }
+                            item.SaveAs(filePath);
+                            if (counter == 1)
+                            {
+                                productPicture.ProductPicture1 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
+                            }
+                            if (counter == 2)
+                            {
+                                productPicture.ProductPicture2 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
+                            }
+                            if (counter == 3)
+                            {
+                                productPicture.ProductPicture3 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
+                            }
+                            if (counter == 4)
+                            {
+                                productPicture.ProductPicture4 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
+                            }
+                            if (counter == 5)
+                            {
+                                productPicture.ProductPicture5 = $"/ProductPictures/{filename}/{model.ProductCode}/" + filename + counter + "-" + guid + extName;
+                            }
+                        }
+                        counter++;
+                    }
+                    int pictureInsertResult =
+                        myProductPictureRepo.Insert(productPicture);
+                    if (pictureInsertResult == 0)
+                    {
+                        TempData["ProductModalError"] = "Ürün eklendi ama ürüne ait fotoğraflar eklenirken bir hata oluştu. Fotoğraf eklemek için tekrar deneyiniz!";
+                    }
+                    else
+                    {
+                        TempData["ProductModalError"] = string.Empty;
+                    }
+                }
 
                 int updateResult = myProductRepo.Update();
                 if (updateResult > 0)
@@ -293,12 +293,12 @@ namespace EcommerceLiteUI.Controllers
         public JsonResult GetProductDetails(int id)
         {
             var product = myProductRepo.GetById(id);
-            if (product!=null)
+            if (product != null)
             {
                 var data = product.Adapt<ProductViewModel>();
-                return Json(new {isSuccess = true,data}, JsonRequestBehavior.AllowGet);
+                return Json(new { isSuccess = true, data }, JsonRequestBehavior.AllowGet);
             }
-            return Json(new { isSuccess = false}, JsonRequestBehavior.AllowGet);
+            return Json(new { isSuccess = false }, JsonRequestBehavior.AllowGet);
 
         }
     }
