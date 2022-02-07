@@ -95,8 +95,8 @@ namespace EcommerceLiteBLL.Settings
                 }
                 var theCredential = new NetworkCredential()
                 {
-                    UserName = SiteMail,
-                    Password = SiteMailPassword
+                    UserName = Constants.EmailAddress,
+                    Password = Constants.EmailPassword
                 };
 
                 AlternateView alternativeView = AlternateView.CreateAlternateViewFromString(htmlBody, null, MediaTypeNames.Text.Html);
